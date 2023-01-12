@@ -6,17 +6,36 @@ const Product = require('../models/Product');
 
 
 router.get('/', async (req, res) => {
-  const id = req.params.idUser;
-  Product.find({}).then((products) => {
-    res.send({
-      allProducts: products
+  const {filterName, sortBy, sorter} = req.query;
+  if (!sorter) {
+    let sorter = 1;
+  } 
+  if (!sortBy) {
+    let sortBy = '_id'
+  }
+  if (filterName) {
+    Product.find({name: {$regex: filterName, $options: 'i'}}).sort({[sortBy]: sorter}).select('_id name price quantity description').then((products) => {
+      res.send({
+        allProducts: products
+      });
+    }).catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
     });
-  }).catch((err) => {
-    console.log(err);
-    res.status(500).json({
-      error: err,
+  } else {
+    Product.find({}).sort({[sortBy]: sorter}).select('_id name price quantity description').then((products) => {
+      res.send({
+        allProducts: products
+      });
+    }).catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
     });
-  });
+  }
 });
 
 router.post("/", async (req, res) => {
@@ -58,7 +77,7 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
     const id = req.params.id;
-    Product.remove({ _id: id })
+    Product.deleteOne({ _id: id })
       .exec()
       .then((result) => {
         res.status(200).json(result);
@@ -75,11 +94,9 @@ router.get('/report', async (req, res) => {
     Product.aggregate([
         {
             $project: {
-                _id: 0,
                 name: 1,
                 quantity: 1,
-                description: 0,
-                sum: { $multiply: [ $quantity, $price ] }
+                sum: { $multiply: [ "$quantity", "$price" ] }
             }
         }
     ]).then((result) => {

@@ -15,7 +15,7 @@ const dbConnData = {
 const mongoose = require('mongoose');
 
 mongoose
-  .connect(`mongodb://${dbConnData.host}:${dbConnData.port}/${dbConnData.database}`, {
+  .connect(process.env.MONGO_URI/*`mongodb://${dbConnData.host}:${dbConnData.port}/${dbConnData.database}`*/, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

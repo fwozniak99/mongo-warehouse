@@ -12,10 +12,12 @@ const dbConnData = {
     database: process.env.MONGO_DATABASE || 'mongodb'
 };
 
+const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/mongo'
+
 const mongoose = require('mongoose');
 
 mongoose
-  .connect(`${process.env.MONGO_URI}`/*`mongodb://${dbConnData.host}:${dbConnData.port}/${dbConnData.database}`*/, {
+  .connect(`${uri}`/*`mongodb://${dbConnData.host}:${dbConnData.port}/${dbConnData.database}`*/, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

@@ -5,12 +5,12 @@ const products = require('./routes/products');
 app.use(express.json());
 app.use('/products', products);
 
-require('dotenv').config({path: "./config.env"});
+/*require('dotenv').config({path: "./config.env"});
 const dbConnData = {
     host: process.env.MONGO_HOST || '127.0.0.1',
     port: process.env.MONGO_PORT || 27017,
     database: process.env.MONGO_DATABASE || 'mongodb'
-};
+};*/
 
 const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/mongo'
 
